@@ -17,7 +17,7 @@ class TimeWheelTest(unittest.TestCase):
         tw.addCallLater(10, cb)
 
         self.assertEqual(len(tw.wheel[100]), 1)
-        for i in xrange(101):
+        for i in range(101):
             tw.moveNext()
 
         self.assertTrue(self.is_called)
@@ -28,7 +28,7 @@ class TimeWheelTest(unittest.TestCase):
         tw.addCallLater(10, cb)
 
         self.assertEqual(len(tw.wheel[100]), 1)
-        for i in xrange(101):
+        for i in range(101):
             tw.moveNext()
 
         self.assertTrue(self.is_called)
@@ -39,7 +39,7 @@ class TimeWheelTest(unittest.TestCase):
         self.is_called = False
         def cb(arg1, **kwargs):
             self.is_called = True
-            print kwargs
+            print(kwargs)
             assert arg1 == ''
             arg2 = kwargs.get('arg2', 0)
             assert arg2 == 1

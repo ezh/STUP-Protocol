@@ -23,7 +23,7 @@ class RingBufferTest(unittest.TestCase):
     def test_ring_buffer_append(self):
         rb = RingBuffer(10)
         self.assertEqual(rb.capacity(), 10)
-        for i in xrange(13):
+        for i in range(13):
             res = rb.append(ContainerItem(i, i + 1, str(i)))
             if i < 10:
                 self.assertEqual(rb.size(), i + 1)

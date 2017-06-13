@@ -32,7 +32,7 @@ class TestClientStateMachine(unittest.TestCase):
         w = p.worker
 
         self.assertEqual(p.state.state_nr, ClientStates.CLOSED)
-        p.send('', syn=1)
+        p.send(b'', syn=1)
         self.assertEqual(p.state.state_nr, ClientStates.LISTEN)
         self.assertEqual(w.send_buffer[0][1]['syn'], 1)
 
@@ -42,7 +42,7 @@ class TestClientStateMachine(unittest.TestCase):
 
         self.assertEqual(p.state.state_nr, ClientStates.CLOSED)
 
-        p.send('', syn=1)
+        p.send(b'', syn=1)
         self.assertEqual(w.send_buffer[0][1]['syn'], 1)
         self.assertEqual(p.state.state_nr, ClientStates.LISTEN)
 
@@ -58,7 +58,7 @@ class TestClientStateMachine(unittest.TestCase):
 
         self.assertEqual(p.state.state_nr, ClientStates.CLOSED)
 
-        p.send('', syn=1)
+        p.send(b'', syn=1)
         self.assertEqual(w.send_buffer[0][1]['syn'], 1)
         self.assertEqual(p.state.state_nr, ClientStates.LISTEN)
 
@@ -68,13 +68,13 @@ class TestClientStateMachine(unittest.TestCase):
         self.assertEqual(p.stupcore.recv_buffer[0].ack, 1)
         self.assertEqual(p.state.state_nr, ClientStates.ESTABLISHED)
 
-        p.send('foo')
-        self.assertEqual(w.send_buffer[1][0], 'foo')
+        p.send(b'foo')
+        self.assertEqual(w.send_buffer[1][0], b'foo')
         self.assertTrue(not w.send_buffer[1][1])
 
-        pack = StupPacket.Packet('bar')
+        pack = StupPacket.Packet(b'bar')
         p.recv(pack)
-        self.assertEqual(p.stupcore.recv_buffer[1].data, 'bar')
+        self.assertEqual(p.stupcore.recv_buffer[1].data, b'bar')
         self.assertEqual(p.state.state_nr, ClientStates.ESTABLISHED)
 
         fin_pack = StupPacket.FinPacket()

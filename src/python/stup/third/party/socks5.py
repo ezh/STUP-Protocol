@@ -95,7 +95,7 @@ class SOCKSv5Outgoing(protocol.Protocol):
         self.peersock.peersock = None
         self.peersock = None
         self.transport.loseConnection()
-        
+
     def dataReceived(self, buf):
         logging.debug("data received: %d" % len(buf))
         self.peersock.transport.write(buf)
@@ -126,7 +126,7 @@ class SOCKSv5(protocol.Protocol):
 
             # Trim off front of the buffer
             self.buf = self.buf[nmethod+2:]
-            
+
             # Check for supported auth mechs
             for m in self.supportedAuthMechs:
                 if m in methods:
@@ -215,7 +215,7 @@ class SOCKSv5(protocol.Protocol):
                 # Any other command is not supported
                 self.sendErrorReply(REPLY_CMD_NOT_SUPPORTED)
 
-        except struct.error, why:
+        except struct.error as why:
             logging.debug("parse request error: %s" % why)
             return None
 
@@ -245,18 +245,18 @@ class SOCKSv5(protocol.Protocol):
                     REPLY_SUCCESS, 
                     0, 
                     ADDR_DOMAINNAME, 
-                    len(remotehost), 
-                    remotehost, 
+                    len(remotehost),
+                    remotehost,
                     remoteport)
         self.transport.write(result)
         self.state = STATE_READY
         self.transport.startReading()
-    
+
     def bindRequested(self, addr, port):
         pass
-    
+
     def authenticateUserPass(self, user, passwd):
-        print "User/pass: ", user, passwd
+        print("User/pass: ", user, passwd)
         return True
 
     def dataReceived(self, buf):

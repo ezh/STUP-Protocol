@@ -16,7 +16,7 @@ from stup import utils as Utils
 from stup import config as Config
 from stup.core.core import StupCore
 
-class StupBaseProtocol(object, protocol.DatagramProtocol):
+class StupBaseProtocol(protocol.DatagramProtocol, object):
     __metaclass__ = abc.ABCMeta
 
     state_machine_cls = None

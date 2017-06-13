@@ -38,13 +38,13 @@ import sys
 import abc
 import logging
 
-from base import *
+from .base import *
 
 class ClosedState(BaseState):
     @property
     def state_nr(self):
         return CLOSED
-    
+
     def _recv(self, pack):
         if pack.syn:
             logging.debug("[%s:%d] CloseState get SYN" % self.protocol.peer_addr)

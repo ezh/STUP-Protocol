@@ -28,15 +28,15 @@ class TestAESCrypto(unittest.TestCase):
         for message in messages:
             padding, padding_length = \
                     aes1.padding(len(message), random.randint(1, 12))
-            a = aes1.encrypt(message + padding)
-            assert len(a) == len(message + padding)
+            a = aes1.encrypt(message.encode('UTF-8') + padding)
+            assert len(a) == len(message.encode('UTF-8') + padding)
 
             b = aes2.decrypt(a)
-            assert b[:-padding_length] == message
+            assert b[:-padding_length] == message.encode('UTF-8')
 
 class TestAESCrypto_with_IV(unittest.TestCase):
     def test_aes_ecb(self):
-        iv = "fk"
+        iv = b"fk"
         key = "she's me before I grew into myself and got hotter with age."
         aes1 = AESCrypto_ECB_with_IV(key)
         aes2 = AESCrypto_ECB_with_IV(key)
@@ -52,8 +52,8 @@ class TestAESCrypto_with_IV(unittest.TestCase):
         for message in messages:
             padding, padding_length = \
                     aes1.padding(len(message), random.randint(1, 12))
-            a = aes1.encrypt(iv, message + padding)
-            assert len(a) == len(message + padding)
+            a = aes1.encrypt(iv, message.encode('UTF-8') + padding)
+            assert len(a) == len(message.encode('UTF-8') + padding)
 
             b = aes2.decrypt(iv, a)
-            assert b[:-padding_length] == message
+            assert b[:-padding_length] == message.encode('UTF-8')

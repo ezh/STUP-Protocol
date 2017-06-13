@@ -20,7 +20,7 @@ log.startLogging(sys.stdout)
 
 class FakeServerProtocol(StupServerProtocol):
     def __init__(self, peer_addr):
-        self.output = ''
+        self.output = b''
         super(FakeServerProtocol, self).__init__(peer_addr)
 
     def dataReceived(self, msg):
@@ -50,7 +50,7 @@ class TestServerProtocol(unittest.TestCase):
         sm = StupPacket.SynPacket()
         sm.seq_number = 1
         self.protocol.datagramReceived(StupPacket.serialize(sm), self.peer_addr)
-        self.assertEqual(self.protocol.output, '')
+        self.assertEqual(self.protocol.output, b'')
         self.assertEqual(self.protocol.state.state_nr, StateMachine.LISTEN)
         seq_id = 0
 
@@ -68,19 +68,19 @@ class TestServerProtocol(unittest.TestCase):
         self.assertTrue(len(self.transport.written), 1)
         self.assertEqual(self.protocol.state.state_nr, StateMachine.ESTABLISHED)
 
-        msg1 = StupPacket.Packet('de')
+        msg1 = StupPacket.Packet(b'de')
         msg1.seq_number = 5
-        msg2 = StupPacket.Packet('abc')
+        msg2 = StupPacket.Packet(b'abc')
         msg2.seq_number = 2
 
         self.protocol.datagramReceived(StupPacket.serialize(msg1), self.peer_addr)
 
         self.assertTrue(len(self.transport.written), 1)
-        self.assertEqual(self.protocol.output, '')
+        self.assertEqual(self.protocol.output, b'')
 
         self.protocol.datagramReceived(StupPacket.serialize(msg2), self.peer_addr)
 
         self.assertTrue(len(self.transport.written), 2)
-        self.assertEqual(self.protocol.output, 'abcde')
+        self.assertEqual(self.protocol.output, b'abcde')
 
         self.assertEqual(self.protocol.state.state_nr, StateMachine.ESTABLISHED)

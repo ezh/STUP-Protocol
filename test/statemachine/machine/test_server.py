@@ -98,11 +98,11 @@ class TestServerStateMachine(unittest.TestCase):
         self.assertEqual(p.state.state_nr, ServerStates.ESTABLISHED)
         self.assertEqual(len(c.recv_buffer), 2)
 
-        p.recv(StupPacket.Packet(str_a))
+        p.recv(StupPacket.Packet(str_a.encode('UTF-8')))
         self.assertEqual(p.state.state_nr, ServerStates.ESTABLISHED)
         self.assertEqual(len(c.recv_buffer), 3)
 
-        p.recv(StupPacket.Packet(str_a))
+        p.recv(StupPacket.Packet(str_a.encode('UTF-8')))
         self.assertEqual(p.state.state_nr, ServerStates.ESTABLISHED)
         self.assertEqual(len(c.recv_buffer), 4)
 

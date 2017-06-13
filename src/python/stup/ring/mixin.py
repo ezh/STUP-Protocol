@@ -1,6 +1,7 @@
 #coding=utf-8
 
 import logging
+import six
 
 from stup import utils as Utils
 
@@ -14,8 +15,12 @@ class RingMixin(object):
     class InvalidOperation(Exception): pass
 
     def _index_valid_check(self, key):
-        if not (type(key) in [int, long] and Utils.is_u32(key)):
-            raise self.InvalidOperation('key{0} out of range'.format(key))
+        if six.PY2:
+            if not (type(key) in [int, long] and Utils.is_u32(key)):
+                raise self.InvalidOperation('key{0} out of range'.format(key))
+        else:
+            if not (type(key) in [int] and Utils.is_u32(key)):
+                raise self.InvalidOperation('key{0} out of range'.format(key))
 
     def _move(self, key, offset):
         return Utils.seq_add(key, offset)

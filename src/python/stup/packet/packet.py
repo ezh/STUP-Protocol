@@ -49,7 +49,8 @@ class Packet(ctypes.Structure, object):
 
     cipher = crypto.cipher.AESCrypto_ECB_with_IV(Config.CRYPTO_KEY)
 
-    def __init__(self, data=''):
+    def __init__(self, data=b''):
+        assert isinstance(data, bytes)
         self._data = data
 
     @classmethod
@@ -61,7 +62,7 @@ class Packet(ctypes.Structure, object):
     @classmethod
     def serialize(self, packet):
         return packet.pack()
-    
+
     @property
     def data(self):
         return self._data
@@ -118,7 +119,7 @@ class Packet(ctypes.Structure, object):
             self.ack_number)
         plain_bytes = header + self._data + padding
         return iv + self.cipher.encrypt(iv, plain_bytes)
-    
+
     def to_dict(self):
         field_names = set([item[0] for item in self._fields_]) ^ set(['data'])
         d = dict(

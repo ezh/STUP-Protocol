@@ -8,7 +8,7 @@ from stup.ring.container.item import ContainerItem
 class RingWindowTest(unittest.TestCase):
     def test_random_get_and_set(self):
         rw = RingWindow(10)
-        
+
         self.assertEqual(rw.get_by_index(5), None)
 
         rw.add(ContainerItem(3, 5, 'foo'))
@@ -39,7 +39,7 @@ class RingWindowTest(unittest.TestCase):
         self.assertEqual(rw.range_l, 0)
         self.assertEqual(rw.range_r, 5)
 
-        for i in xrange(100):
+        for i in range(100):
             rw.add(ContainerItem(i, i + 1, 'foo'))
 
             a = rw.pop_left()
@@ -50,11 +50,11 @@ class RingWindowTest(unittest.TestCase):
 
     def test_pop_left_until(self):
         rw = RingWindow(10)
-        for i in xrange(10):
+        for i in range(10):
             rw.add(ContainerItem(i, i + 1, i))
 
         res = rw.pop_left_until(lambda x: x.payload == 5)
-        print map(lambda x: x.payload, res)
+        print(map(lambda x: x.payload, res))
         self.assertEqual(len(res), 5)
         self.assertEqual(
                 map(lambda x: x.payload, res), 
@@ -62,21 +62,21 @@ class RingWindowTest(unittest.TestCase):
 
     def test_pop_left_to(self):
         rw = RingWindow(10)
-        for i in xrange(10):
+        for i in range(10):
             rw.add(ContainerItem(i, i + 1, i))
 
         res = rw.pop_left_to(lambda x: x.payload == 5)
-        print map(lambda x: x.payload, res)
+        print(map(lambda x: x.payload, res))
         self.assertEqual(len(res), 6)
         self.assertEqual(
-                map(lambda x: x.payload, res), 
+                list(map(lambda x: x.payload, res)),
                 [0, 1, 2, 3, 4, 5])
 
     def test_pop_left_until(self):
         rw = RingWindow(10)
         rw.add(ContainerItem(1, 2, 'foo'))
         res = rw.pop_left_until(lambda x: False)
-        print res
+        print(res)
         self.assertEqual(res, [])
 
         rw.add(ContainerItem(0, 1, 'bar'))

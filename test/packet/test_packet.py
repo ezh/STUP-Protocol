@@ -8,7 +8,7 @@ from stup import crypto
 
 class PacketTest(unittest.TestCase):
     def test_serialize_and_deserialize(self):
-        msg = Packet('foo')
+        msg = Packet(b'foo')
 
         self.assertEqual(msg.ver, 0)
         self.assertEqual(msg.nonce, 0)
@@ -21,7 +21,7 @@ class PacketTest(unittest.TestCase):
         self.assertEqual(msg.fin, 0)
         self.assertEqual(msg.seq_number, 0)
         self.assertEqual(msg.ack_number, 0)
-        self.assertEqual(msg.data, 'foo')
+        self.assertEqual(msg.data, b'foo')
 
         buf = Packet.serialize(msg)
 
@@ -29,7 +29,7 @@ class PacketTest(unittest.TestCase):
         assert msg.data == msg1.data
 
     def test_random_serialize_and_deserialize(self):
-        for i in xrange(1111):
+        for i in range(1111):
             payload = crypto.cipher.nonce(i)
             msg = Packet(payload)
 
@@ -53,7 +53,7 @@ class PacketTest(unittest.TestCase):
 
     def test_empty_buf(self):
         msg = Packet()
-        self.assertEqual(msg.data, '')
+        self.assertEqual(msg.data, b'')
 
         msg.ver = 0x7
         msg.nonce = 0x3F

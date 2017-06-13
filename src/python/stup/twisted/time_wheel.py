@@ -2,6 +2,8 @@
 
 from __future__ import absolute_import
 import logging
+import six
+
 from stup.utils import nop
 
 class TimeWheel(object):
@@ -10,7 +12,7 @@ class TimeWheel(object):
 
         self.size = size + 1
         self.granularity = granularity
-        self.wheel = [[] for i in xrange(self.size)]
+        self.wheel = [[] for i in range(self.size)]
         self.ptr = 0
         self.pending = 0
 
@@ -31,7 +33,7 @@ class TimeWheel(object):
             logging.debug("time wheel call: %s %s %s", cb, args, kwargs)
             try:
                 cb(*args, **kwargs)
-            except Exception, e:
+            except Exception as e:
                 logging.warning("function[%s] throws an exception: %s" , cb, e)
             self.pending -= 1
         self.wheel[self.ptr] = []

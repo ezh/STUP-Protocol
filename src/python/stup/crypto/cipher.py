@@ -1,10 +1,16 @@
 import abc
 import random
-from Crypto.Cipher import DES, AES
+import array
+import six
+
+from Crypto.Cipher import AES
 from stup.crypto.digest import digest
 
 def nonce(length):
-    return ''.join([chr(random.randint(0, 255)) for i in xrange(length)])
+    if six.PY2:
+        return array.array('B', [random.randint(0, 255) for i in range(length)]).tostring()
+    else:
+        return array.array('B', [random.randint(0, 255) for i in range(length)]).tobytes()
 
 def padding(data_length, unit, extra):
     padded_data_length = data_length + extra
@@ -54,12 +60,16 @@ class AESCrypto_ECB_with_IV(Crypto):
 
     def encrypt(self, iv, plain_data):
         fullkey = self.key + iv[:self.iv_size]
+        assert isinstance(iv, bytes)
+        assert isinstance(plain_data, bytes)
         assert len(fullkey) == self.KEY_SIZE
         assert len(plain_data) % self.BLOCK_SIZE == 0
         aes = AES.new(fullkey, AES.MODE_ECB)
         return aes.encrypt(plain_data)
 
     def decrypt(self, iv, cipher_data):
+        assert isinstance(iv, bytes)
+        assert isinstance(cipher_data, bytes)
         fullkey = self.key + iv[:self.iv_size]
         assert len(fullkey) == self.KEY_SIZE
         assert len(cipher_data) % self.BLOCK_SIZE == 0

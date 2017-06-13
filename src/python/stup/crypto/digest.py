@@ -1,6 +1,6 @@
+from __future__ import absolute_import, print_function, with_statement
+
 import Crypto.Hash.MD5
 
 def digest(plain_text):
-    h = Crypto.Hash.MD5.new()
-    h.update(plain_text)
-    return h.digest()
+    return Crypto.Hash.MD5.new(plain_text.encode('UTF-8')).digest()

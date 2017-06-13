@@ -85,7 +85,7 @@ class ClientStupCoreTest(unittest.TestCase):
         syn_ack_pack = StupPacket.SynAckPacket()
         syn_ack_pack.ack_number = 1
 
-        self.stupcore.send('', syn=1)
+        self.stupcore.send(b'', syn=1)
         self.assertEqual(self.stupcore.output_buffer.size(), 1)
 
         self.stupcore.recv(syn_ack_pack)
@@ -100,7 +100,7 @@ class ClientStupCoreTest(unittest.TestCase):
         self.assertEqual(self.stupcore.state.state_nr, StateMachine.FIN)
 
         yield TwistedUtils.sleep(0.3)
-        print self.protocol.last_packet()
+        print(self.protocol.last_packet())
 
         self.assertEqual(self.protocol.last_packet().fin, 1)
         self.assertEqual(self.protocol.last_packet().ack, 1)
@@ -133,7 +133,7 @@ class ClientStupCoreTest(unittest.TestCase):
     def test_retry_syn(self):
         self.stupcore.get_timeout = lambda x: 0.1
         self.stupcore.RETRY_THRESHOLD = 3
-        self.stupcore.send('', syn=1)
+        self.stupcore.send(b'', syn=1)
 
         self.assertEqual(
                 StupPacket.Packet.deserialize(self.protocol.output_buffer[0]).syn, 1)
@@ -160,7 +160,7 @@ class ClientStupCoreTest(unittest.TestCase):
         self.stupcore.output_buffer = RingBuffer(1000, SEQ_ID)
 
         # send ack
-        self.stupcore.send('', syn=1)
+        self.stupcore.send(b'', syn=1)
 
         # recv syn_ack
         syn_ack_pack = StupPacket.SynAckPacket()
@@ -195,7 +195,7 @@ class ClientStupCoreTest(unittest.TestCase):
         syn_ack_pack = StupPacket.SynAckPacket()
         syn_ack_pack.ack_number = 1
 
-        self.stupcore.send('', syn=1)
+        self.stupcore.send(b'', syn=1)
         self.assertEqual(self.stupcore.output_buffer.size(), 1)
 
         self.stupcore.recv(syn_ack_pack)
@@ -203,16 +203,16 @@ class ClientStupCoreTest(unittest.TestCase):
 
         self.assertEqual(self.stupcore.state.state_nr, StateMachine.ESTABLISHED)
 
-        ping_pack = StupPacket.Packet('ping')
+        ping_pack = StupPacket.Packet(b'ping')
         ping_pack.seq_number = 1
         self.stupcore.recv(ping_pack)
         self.assertEqual(self.protocol.last_packet().ack, 1)
         self.assertEqual(self.protocol.last_packet().syn, 0)
         self.assertEqual(self.stupcore.output_buffer.size(), 0)
 
-        self.stupcore.send('pong')
+        self.stupcore.send(b'pong')
         yield TwistedUtils.sleep(0.5)
-        self.assertEqual(self.stupcore.output_buffer.size(), len('pong'))
+        self.assertEqual(self.stupcore.output_buffer.size(), len(b'pong'))
 
         self.assertEqual(self.stupcore.state.state_nr, StateMachine.RST)
         self.stupcore.cancel_all_defers()
@@ -229,7 +229,7 @@ class ClientStupCoreTest(unittest.TestCase):
         syn_ack_pack = StupPacket.SynAckPacket()
         syn_ack_pack.ack_number = 1
 
-        self.stupcore.send('', syn=1)
+        self.stupcore.send(b'', syn=1)
         self.assertEqual(self.stupcore.output_buffer.size(), 1)
 
         self.stupcore.recv(syn_ack_pack)
@@ -237,9 +237,9 @@ class ClientStupCoreTest(unittest.TestCase):
 
         self.assertEqual(self.stupcore.state.state_nr, StateMachine.ESTABLISHED)
 
-        self.stupcore.send('a' * 10)
-        self.stupcore.send('b' * 10)
-        self.stupcore.send('c')
+        self.stupcore.send(b'a' * 10)
+        self.stupcore.send(b'b' * 10)
+        self.stupcore.send(b'c')
 
         self.assertEqual(self.stupcore.output_buffer.size(), 20)
 
@@ -262,7 +262,7 @@ class ClientStupCoreTest(unittest.TestCase):
         self.stupcore.output_buffer = RingBuffer(1000, 990)
         self.stupcore.send_seq_id = 990
 
-        self.stupcore.send('', syn=1)
+        self.stupcore.send(b'', syn=1)
         self.assertEqual(self.stupcore.output_buffer.size(), 1)
 
         syn_ack_pack = StupPacket.SynAckPacket()
@@ -273,18 +273,18 @@ class ClientStupCoreTest(unittest.TestCase):
 
         self.assertEqual(self.stupcore.state.state_nr, StateMachine.ESTABLISHED)
 
-        packet = StupPacket.Packet('a' * 10)
+        packet = StupPacket.Packet(b'a' * 10)
         packet.seq_number = 1
 
-        self.assertEqual(self.stupcore.recv(packet), 'a' * 10)
+        self.assertEqual(self.stupcore.recv(packet), b'a' * 10)
 
-        packet = StupPacket.Packet('c' * 10)
+        packet = StupPacket.Packet(b'c' * 10)
         packet.seq_number = 21
-        self.assertEqual(self.stupcore.recv(packet), '')
+        self.assertEqual(self.stupcore.recv(packet), b'')
 
-        packet = StupPacket.Packet('b' * 10)
+        packet = StupPacket.Packet(b'b' * 10)
         packet.seq_number = 11
-        self.assertEqual(self.stupcore.recv(packet), 'b' * 10 + 'c' * 10)
+        self.assertEqual(self.stupcore.recv(packet), b'b' * 10 + b'c' * 10)
 
         self.stupcore.reset()
 
@@ -315,7 +315,7 @@ class ServerStupCoreTest(unittest.TestCase):
 
         for i, item in enumerate(self.protocol.output_buffer):
             packet = StupPacket.Packet.deserialize(item)
-            print packet
+            print(packet)
             if i < 3:
                 self.assertEquals(packet.syn, 1)
                 self.assertEquals(packet.ack, 1)
@@ -367,13 +367,13 @@ class ServerStupCoreTest(unittest.TestCase):
         self.stupcore.recv(ack_pack)
         self.assertEqual(self.stupcore.state.state_nr, StateMachine.ESTABLISHED)
 
-        ping_pack = StupPacket.Packet('ping')
+        ping_pack = StupPacket.Packet(b'ping')
         ping_pack.seq_number = 1
         self.stupcore.recv(ping_pack)
         yield TwistedUtils.sleep(0.2)
         self.assertEqual(self.protocol.last_packet().ack, 1)
         self.assertEqual(self.protocol.last_packet().syn, 0)
-        self.stupcore.send('pong')
+        self.stupcore.send(b'pong')
 
         yield TwistedUtils.sleep(0.5)
 
@@ -401,21 +401,21 @@ class ServerStupCoreTest(unittest.TestCase):
         self.stupcore.recv(ack_pack)
         self.assertEqual(self.stupcore.state.state_nr, StateMachine.ESTABLISHED)
 
-        ping_pack = StupPacket.Packet('ping')
+        ping_pack = StupPacket.Packet(b'ping')
         ping_pack.seq_number = 1
         self.stupcore.recv(ping_pack)
         yield TwistedUtils.sleep(0.3)
         self.assertEqual(self.protocol.last_packet().ack, 1)
         self.assertEqual(self.protocol.last_packet().syn, 0)
-        self.stupcore.send('pong1')
+        self.stupcore.send(b'pong1')
         yield TwistedUtils.sleep(0.1)
-        self.stupcore.send('pong2')
+        self.stupcore.send(b'pong2')
         yield TwistedUtils.sleep(0.1)
-        self.stupcore.send('pong3')
+        self.stupcore.send(b'pong3')
 
         yield TwistedUtils.sleep(0.1)
 
-        for i in xrange(20):
+        for i in range(20):
             ack_pack = StupPacket.AckPacket()
             ack_pack.ack_number = 6
             self.stupcore.recv(ack_pack)

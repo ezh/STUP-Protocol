@@ -8,6 +8,7 @@ from twisted.internet import reactor
 
 import copy
 import logging
+import math
 import traceback
 
 from stup import config as Config
@@ -45,7 +46,7 @@ class StupCore(object):
                 Config.SEND_BUFFER_SIZE, self.send_seq_id)
 
         self.nagle_next = 0
-        self.nagle_buffer = ''
+        self.nagle_buffer = b''
 
         self.send_q = DeferredDeque()
         self.send_q.pop_left().addCallback(self._send_packet)
@@ -118,7 +119,7 @@ class StupCore(object):
         if self.state.state_nr == StateMachine.RST:
             return
         self.state_machine.set_state(StateMachine.RST)
-        for i in xrange(Config.RST_SEND_TIMES):
+        for i in range(Config.RST_SEND_TIMES):
             self.send_ctrl_packet(StupPacket.RstPacket())
         self.handle_rst()
 
@@ -140,14 +141,14 @@ class StupCore(object):
 
     def finalize(self):
         self.fin_sent = True
-        self.send('', fin=1, psh=1)
+        self.send(b'', fin=1, psh=1)
 
     def handle_fin(self):
         if self.fin_sent:
-            for i in xrange(Config.FIN_ACK_SEND_TIMES):
-                self.send('', ack=1, psh=1)
+            for i in range(Config.FIN_ACK_SEND_TIMES):
+                self.send(b'', ack=1, psh=1)
         else:
-            self.send('', fin=1, ack=1, psh=1)
+            self.send(b'', fin=1, ack=1, psh=1)
             self.fin_sent = True
             self.state_machine.set_state(StateMachine.FIN)
 
@@ -198,17 +199,17 @@ class StupCore(object):
                     ContainerItem(packet.seq_number, packet.seq_number + 1, packet))
             self.input_window.pop_left_until(lambda x: False)
 
-            self.send('', syn=1, ack=1, psh=1)
+            self.send(b'', syn=1, ack=1, psh=1)
             self.set_state(StateMachine.LISTEN)
         elif packet.syn and packet.ack:
             if self.output_buffer.range_r != packet.ack_number:
                 logging.debug("invalid syn ack packet received, ignore it")
-                return ''
+                return b''
 
             syn_pack = self.output_buffer.pop_left_until(lambda x: False)
             if len(syn_pack) != 1:
                 #self.reset()
-                return ''
+                return b''
 
             logging.debug("pop out sent syn: %s" % str(syn_pack[0].payload.packet))
 
@@ -217,12 +218,12 @@ class StupCore(object):
                     ContainerItem(packet.seq_number, packet.seq_number + 1, packet))
             self.input_window.pop_left_until(lambda x: False)
 
-            self.send('', ack=1, psh=1)
+            self.send(b'', ack=1, psh=1)
             self.set_state(StateMachine.ESTABLISHED)
             self.connection_made()
             self.protocol.connectionMade()
 
-        return ''
+        return b''
 
     def fast_resend(self, ack_id):
         if ack_id != self.last_recv_ack_id:
@@ -279,18 +280,18 @@ class StupCore(object):
 
         avail_data = self.input_window.pop_left_to(lambda item: item.payload.fin)
         if avail_data:
-            data = ''.join(map(lambda pack: pack.payload.data, avail_data))
+            data = b''.join(map(lambda pack: pack.payload.data, avail_data))
             if avail_data[-1].payload.fin:
                 self.handle_fin()
             elif data:
-                self.send('', ack=1)
+                self.send(b'', ack=1)
             return data
-        return ''
+        return b''
 
     def nagle_refrsh(self):
         self.nagle_next = Utils.cur_second() + self.NAGLE_TIMEOUT
         self.callLater(
-                self.NAGLE_TIMEOUT, self._send, '', **{'nagle_psh': 1})
+                self.NAGLE_TIMEOUT, self._send, b'', **{'nagle_psh': 1})
 
     def has_packet_to_send(self):
         return self.last_ack_id != self.next_ack_id() or self.nagle_buffer
@@ -299,6 +300,7 @@ class StupCore(object):
         return seq_number in self.sending_table
 
     def send(self, msg, **kwargs):
+        assert isinstance(msg, bytes)
         if len(msg) + self.output_buffer.size() > self.output_buffer.capacity():
             logging.debug("Output buffer is full!")
             return -1
@@ -320,6 +322,7 @@ class StupCore(object):
         return len(msg) + (1 if (syn or fin) else 0)
 
     def _send(self, msg, **kwargs):
+        assert isinstance(msg, bytes)
         syn = kwargs.get('syn', 0)
         psh = kwargs.get('psh', 0)
         fin = kwargs.get('fin', 0)
@@ -345,13 +348,14 @@ class StupCore(object):
             self.send_msg(buffer_to_send)
             return True
         elif (nagle_psh or self.is_idle()) and self.has_packet_to_send():
-            buffer_to_send, self.nagle_buffer = self.nagle_buffer, ''
+            buffer_to_send, self.nagle_buffer = self.nagle_buffer, b''
             self.send_msg(buffer_to_send)
             return True
 
         return False
 
     def send_msg(self, msg, **kwargs):
+        assert isinstance(msg, bytes)
         syn = kwargs.get('syn', 0)
         fin = kwargs.get('fin', 0)
         psh = kwargs.get('psh', 0)
@@ -367,8 +371,8 @@ class StupCore(object):
 
         pack_size = len(msg) + (1 if (syn or fin) else 0)
 
-        chunk_num = (pack_size + self.SEND_CHUNK_SIZE - 1) / self.SEND_CHUNK_SIZE
-        for chunk_idx in xrange(chunk_num):
+        chunk_num = int(math.floor((pack_size + self.SEND_CHUNK_SIZE - 1) / self.SEND_CHUNK_SIZE))
+        for chunk_idx in range(chunk_num):
             chunk = msg[chunk_idx * self.SEND_CHUNK_SIZE: (chunk_idx + 1) * self.SEND_CHUNK_SIZE]
 
             l = self.send_seq_id
