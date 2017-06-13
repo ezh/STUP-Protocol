@@ -38,7 +38,7 @@ import sys
 import abc
 import logging
 
-from StateMachineBase import *
+from base import *
 
 class ClosedState(BaseState):
     @property

@@ -1,6 +1,6 @@
 #coding=utf-8
 
-import StateMachineBase
+from stup.state import machine as StateMachineBase
 
 class FakeWorker(object):
     def __init__(self, protocol):

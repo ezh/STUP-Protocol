@@ -1,11 +1,13 @@
 #!/usr/bin/python
+from __future__ import absolute_import
+
 import random
 import string
-import md5
 import datetime
 import time
 import string
 import logging
+import six
 
 from twisted.python import log
 
@@ -23,11 +25,8 @@ UINT32_MAX = 0xFFFFFFFF
 def rand_str(length):
     return ''.join([
         random.choice(string.ascii_letters + string.digits)
-        for i in xrange(length)
+        for i in range(length)
     ])
-
-def md5sum(s):
-    return md5.new(s).digest()
 
 def to_u32(value):
     return int(value) & UINT32_MAX
@@ -65,10 +64,16 @@ def nop(*args, **kwargs):
 # this code clip is from Python Cookbook, 2nd Edition(1.11)
 # Credit: Andrew Dalke
 text_characters = "".join(map(chr, range(32, 127))) + "\n\r\t\b"
-_null_trans = string.maketrans("", "")
+if six.PY2:
+    _null_trans = string.maketrans("", "")
+else:
+    _null_trans = str.maketrans("", "")
 def istext(s, text_characters=text_characters, threshold=0.30):
+    assert isinstance(s, bytes)
     # if s contains any null, it's not text:
-    if "\0" in s:
+    if six.PY2 and "\0" in s:
+        return False
+    elif six.PY3 and 0 in s:
         return False
     # an "empty" string is "text" (arbitrary but reasonable choice):
     if not s:
@@ -86,7 +91,7 @@ class TcpRttEstimator(object):
     def __init__(self):
         self.srtt = 0
         self.devrtt = 0
-        
+
     def nextRTO(self, rtt):
         self.srtt += self.ALPHA * (rtt - self.srtt)
         self.devrtt = (1 - self.BETA) * self.devrtt + self.BETA * abs(rtt - self.srtt)

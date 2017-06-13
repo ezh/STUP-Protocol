@@ -2,7 +2,7 @@
 
 import pytest
 import unittest
-from TimeWheel import *
+from stup.twisted.time_wheel import *
 
 class TimeWheelTest(unittest.TestCase):
     def test_run(self):

@@ -2,10 +2,10 @@
 import sys
 import unittest
 
-import Client as ClientStates
-from .. import StupPacket
+from stup.state.machine import client as ClientStates
+from stup import packet as StupPacket
 
-from Fake_test import *
+from .fake import *
 
 class FakeClientStupCore(FakeStupCore):
     def send(self, msg, **kwargs):

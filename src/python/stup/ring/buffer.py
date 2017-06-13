@@ -2,8 +2,8 @@
 
 import logging
 
-from .. import Utils
-from RingMixin import RingMixin
+from stup import utils as Utils
+from .mixin import RingMixin
 
 class RingBuffer(RingMixin, object):
     def __init__(self, size=1, base_idx=0):

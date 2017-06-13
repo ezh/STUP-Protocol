@@ -1,17 +1,20 @@
 #coding=utf-8
+from __future__ import absolute_import
+
 import abc
 import sys
 import logging
+
+import stup
 
 from twisted.python import log
 from twisted.internet import defer, protocol, reactor, error
 from twisted.internet.defer import DeferredQueue
 from twisted.internet.task import deferLater
 
-from .. import Utils
-from .. import Config
-from ..StupCore import StupCore
-from .. import StupPacket
+from stup import utils as Utils
+from stup import config as Config
+from stup.core.core import StupCore
 
 class StupBaseProtocol(object, protocol.DatagramProtocol):
     __metaclass__ = abc.ABCMeta
@@ -33,7 +36,7 @@ class StupBaseProtocol(object, protocol.DatagramProtocol):
         return self.state.send(msg)
 
     def datagramReceived(self, datagram, addr):
-        packet = StupPacket.deserialize(datagram)
+        packet = stup.packet.deserialize(datagram)
         data = self.state.recv(packet)
         if data:
             return self.dataReceived(data)

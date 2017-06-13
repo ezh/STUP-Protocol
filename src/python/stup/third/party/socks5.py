@@ -25,6 +25,8 @@ THE SOFTWARE.
 $Id: socks5.py 31 2007-12-21 00:08:34Z fabio.forno $
 """
 
+from __future__ import absolute_import
+
 from twisted import internet
 from twisted.internet import protocol, reactor
 import struct

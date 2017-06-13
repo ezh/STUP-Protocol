@@ -1,1 +1,1 @@
-import Cipher
+from . import cipher

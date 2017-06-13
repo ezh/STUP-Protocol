@@ -2,7 +2,7 @@
 import sys
 import unittest
 
-import Utils
+from stup import utils as Utils
 
 class TestUtils(unittest.TestCase):
     def test_seq_add(self):
@@ -16,7 +16,7 @@ class TestUtils(unittest.TestCase):
         self.assertEqual(Utils.seq_sub(0xFFFFFFFF, 1), 0xFFFFFFFE)
         self.assertEqual(Utils.seq_sub(0x00000000, 1), 0xFFFFFFFF)
         self.assertEqual(Utils.seq_sub(0x00000000, 2), 0xFFFFFFFE)
-        for i in xrange(1000):
+        for i in range(1000):
             a, b = Utils.rand_u32(), Utils.rand_u32()
             x = Utils.seq_add(a, b)
             y = Utils.seq_sub(x, a)

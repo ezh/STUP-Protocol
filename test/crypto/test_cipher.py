@@ -3,7 +3,7 @@ import os
 import sys
 import unittest
 
-from .Cipher import *
+from stup.crypto.cipher import *
 
 class TestAESCrypto(unittest.TestCase):
     def test_padding(self):

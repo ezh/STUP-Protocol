@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from .StupPacket import Packet
+from .packet import Packet
 
 class FinPacket(Packet):
     def __init__(self, *args, **kwargs):

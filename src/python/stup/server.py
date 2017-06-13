@@ -1,11 +1,12 @@
 #coding=utf-8
+from __future__ import absolute_import
+
 import time
 import logging
 from twisted.internet import protocol, reactor, defer
-import Config
-from Protocol.Server import StupServerProtocol
-from ThirdParty.socks5 import SOCKSv5
-import time
+from stup import config as Config
+from stup.protocol.server import StupServerProtocol
+from stup.third.party.socks5 import SOCKSv5
 
 class StupTransportAdapter(object):
     def __init__(self, stup):

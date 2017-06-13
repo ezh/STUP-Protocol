@@ -1,10 +1,12 @@
 #coding=utf-8
+from __future__ import absolute_import
+
 import logging
 from twisted.internet import defer, protocol, reactor
-import Config
-import Protocol
+from stup import config as Config
+from stup.protocol.client import StupClientProtocol
 
-class StupOutgoing(Protocol.Client.StupClientProtocol):
+class StupOutgoing(StupClientProtocol):
     def __init__(self, serveraddr, socks5):
         self.socks5 = socks5
         self.socks5.stup = self

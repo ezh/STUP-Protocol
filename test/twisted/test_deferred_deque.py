@@ -1,4 +1,5 @@
 #coding=utf-8
+from __future__ import absolute_import
 
 import pytest
 import twisted
@@ -6,7 +7,7 @@ from twisted.trial import unittest
 from twisted.internet.defer import Deferred
 from twisted.python import log
 
-from DeferredDeque import *
+from stup.twisted.deferred_deque import *
 
 class DeferredDequeueTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):

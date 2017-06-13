@@ -1,8 +1,8 @@
 #coding=utf-8
 
 import unittest
-from .RingWindow import RingWindow
-from .ContainerItem import ContainerItem
+from stup.ring.window import RingWindow
+from stup.ring.container.item import ContainerItem
 
 
 class RingWindowTest(unittest.TestCase):

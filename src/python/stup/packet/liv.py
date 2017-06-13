@@ -1,5 +1,5 @@
 #!/usr/bin/python
-from .StupPacket import Packet
+from .packet import Packet
 
 class LivPacket(Packet):
     def __init__(self, seq_number, *args, **kwargs):

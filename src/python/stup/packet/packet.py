@@ -3,9 +3,9 @@ import ctypes
 import random
 import bitstruct
 from io import BytesIO
-from .. import Utils
-from .. import Config
-from .. import Crypto
+from stup import utils as Utils
+from stup import config as Config
+from stup import crypto
 
 
 '''
@@ -47,7 +47,7 @@ class Packet(ctypes.Structure, object):
     STRUCT_FORMAT_STR = "<u3u6" + "u1" * 7 + "u32" * 2
     STRUCT_SIZE = 10
 
-    cipher = Crypto.Cipher.AESCrypto_ECB_with_IV(Config.CRYPTO_KEY)
+    cipher = crypto.cipher.AESCrypto_ECB_with_IV(Config.CRYPTO_KEY)
 
     def __init__(self, data=''):
         self._data = data
@@ -96,7 +96,7 @@ class Packet(ctypes.Structure, object):
         self.data = self.data[:-self.nonce]
 
     def pack(self):
-        iv = Crypto.Cipher.nonce(2)
+        iv = crypto.cipher.nonce(2)
         length = self.STRUCT_SIZE + len(self._data)
         extra = random.randint(1, 16)
         padding, padding_length = self.cipher.padding(length, extra)

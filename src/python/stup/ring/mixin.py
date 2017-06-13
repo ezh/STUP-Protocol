@@ -2,7 +2,7 @@
 
 import logging
 
-from .. import Utils
+from stup import utils as Utils
 
 class RingMixin(object):
     OK = 0

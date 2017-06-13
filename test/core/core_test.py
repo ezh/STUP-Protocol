@@ -1,4 +1,5 @@
 #coding=utf-8
+from __future__ import absolute_import
 
 import pytest
 import twisted
@@ -8,11 +9,12 @@ from twisted.internet.defer import inlineCallbacks
 from twisted.internet.defer import Deferred
 from twisted.python import log
 
-from .. import Utils
-from .StupCore import *
-from .. import StupPacket
-from .. import Config
-from .. import StateMachine
+from stup import utils as Utils
+from stup.core import *
+from stup import packet as StupPacket
+from stup import config as Config
+from stup.state import machine as StateMachine
+from stup import twisted as TwistedUtils
 
 class FakeTransport(object):
     def __init__(self, output_buffer):
@@ -120,7 +122,7 @@ class ClientStupCoreTest(unittest.TestCase):
 
         self.stupcore.finalize()
 
-        yield TwistedUtils.Utils.sleep(0.5)
+        yield TwistedUtils.sleep(0.5)
         self.stupcore.cancel_all_defers()
 
         self.assertTrue(len(self.protocol.output_buffer), 1)
@@ -241,7 +243,7 @@ class ClientStupCoreTest(unittest.TestCase):
 
         self.assertEqual(self.stupcore.output_buffer.size(), 20)
 
-        yield TwistedUtils.Utils.sleep(0.5)
+        yield TwistedUtils.sleep(0.5)
         self.stupcore.cancel_all_defers()
 
         self.assertEqual(self.stupcore.output_buffer.size(), 21)

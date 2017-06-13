@@ -9,12 +9,12 @@ from twisted.test import proto_helpers
 from twisted.internet import defer
 from twisted.python import log
 
-from .. import Config
-from .. import StupPacket
-from .. import Utils
-from .. import StateMachine
-from ..RingContainer import RingBuffer
-from .Server import StupServerProtocol
+from stup import config as Config
+from stup import packet as StupPacket
+from stup import utils as Utils
+from stup.state import machine as StateMachine
+from stup.ring.buffer import RingBuffer
+from stup.server import StupServerProtocol
 
 log.startLogging(sys.stdout)
 

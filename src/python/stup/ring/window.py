@@ -1,7 +1,7 @@
 #coding=utf-8
 
 import logging
-from RingMixin import RingMixin
+from .mixin import RingMixin
 
 class RingWindow(RingMixin, object):
     def __init__(self, size=1, base_idx=0):

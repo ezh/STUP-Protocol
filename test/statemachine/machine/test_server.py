@@ -2,10 +2,11 @@
 import sys
 
 import unittest
-import Server as ServerStates
-from .. import StupPacket
 
-from Fake_test import *
+from stup.state.machine import server as ServerStates
+from stup import packet as StupPacket
+
+from .fake import *
 
 class FakeServerStupCore(FakeStupCore):
     def send(self, msg, **kwargs):

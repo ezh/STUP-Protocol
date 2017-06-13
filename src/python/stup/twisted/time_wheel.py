@@ -1,6 +1,8 @@
 #coding=utf-8
+
+from __future__ import absolute_import
 import logging
-from ..Utils import nop
+from stup.utils import nop
 
 class TimeWheel(object):
     def __init__(self, size=100, granularity=0.05):

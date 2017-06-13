@@ -4,7 +4,7 @@ import abc
 import logging
 from twisted.internet import defer
 
-from .. import Config
+from stup import config as Config
 
 STATES = [
     'CLOSED',

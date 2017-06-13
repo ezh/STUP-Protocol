@@ -1,7 +1,7 @@
 import abc
 import random
 from Crypto.Cipher import DES, AES
-from .Digest import digest
+from stup.crypto.digest import digest
 
 def nonce(length):
     return ''.join([chr(random.randint(0, 255)) for i in xrange(length)])

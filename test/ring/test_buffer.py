@@ -2,8 +2,8 @@
 
 import unittest
 
-from .RingBuffer import RingBuffer
-from .ContainerItem import ContainerItem
+from stup.ring.buffer import RingBuffer
+from stup.ring.container.item import ContainerItem
 
 class RingBufferTest(unittest.TestCase):
     def test_basic(self):

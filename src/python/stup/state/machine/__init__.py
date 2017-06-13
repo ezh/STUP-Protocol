@@ -1,4 +1,4 @@
-from StateMachineBase import CLOSED, LISTEN, ESTABLISHED, FIN, RST
+from .base import CLOSED, LISTEN, ESTABLISHED, FIN, RST
 
-from Client import ClientStateMachine
-from Server import ServerStateMachine
+from .client import ClientStateMachine
+from .server import ServerStateMachine

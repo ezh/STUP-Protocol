@@ -2,8 +2,9 @@
 
 import unittest
 import random
-from .StupPacket import Packet
-from .. import Crypto
+from stup import packet
+from stup.packet.packet import Packet
+from stup import crypto
 
 class PacketTest(unittest.TestCase):
     def test_serialize_and_deserialize(self):
@@ -29,7 +30,7 @@ class PacketTest(unittest.TestCase):
 
     def test_random_serialize_and_deserialize(self):
         for i in xrange(1111):
-            payload = Crypto.Cipher.nonce(i)
+            payload = crypto.cipher.nonce(i)
             msg = Packet(payload)
 
             self.assertEqual(msg.ver, 0)
@@ -74,27 +75,18 @@ class PacketTest(unittest.TestCase):
         self.assertEqual(len(msg1.data), 0)
 
     def test_message_specific(self):
-        from .AckPacket import *
-        m1 = AckPacket()
+        m1 = packet.ack.AckPacket()
         self.assertEqual(m1.ack, 1)
 
-        from .FinPacket import *
-        m2 = FinPacket()
+        m2 = packet.fin.FinPacket()
         self.assertEqual(m2.fin, 1)
 
-        from .RstPacket import *
-        m3 = RstPacket()
+        m3 = packet.rst.RstPacket()
         self.assertEqual(m3.rst, 1)
 
-        from .SynAckPacket import *
-        m4 = SynAckPacket()
+        m4 = packet.synack.SynAckPacket()
         self.assertEqual(m4.syn, 1)
         self.assertEqual(m4.ack, 1)
 
-        from .SynPacket import *
-        m5 = SynPacket()
+        m5 = packet.syn.SynPacket()
         self.assertEqual(m5.syn, 1)
-
-if __name__ == '__main__':
-    unittest.main()
-

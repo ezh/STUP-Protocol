@@ -1,4 +1,6 @@
 #coding=utf-8
+from __future__ import absolute_import
+
 from twisted.internet import defer
 from twisted.internet import task
 from twisted.internet import protocol
@@ -8,13 +10,13 @@ import copy
 import logging
 import traceback
 
-from .. import Config
-from .. import StupPacket
-from .. import Utils
-from .. import StateMachine
-from .. import TwistedUtils
-from ..RingContainer import RingBuffer, RingWindow, ContainerItem
-from ..TwistedUtils import DeferredDeque
+from stup import config as Config
+from stup import packet as StupPacket
+from stup import utils as Utils
+from stup.state import machine as StateMachine
+from stup import twisted
+from stup.ring import RingBuffer, RingWindow, ContainerItem
+from stup.twisted.deferred_deque import DeferredDeque
 
 class StupCore(object):
     class PacketItem(object):
@@ -57,8 +59,8 @@ class StupCore(object):
         self.last_recv_ack_id = -1
         self.last_recv_ack_cnt = 0
 
-        self.time_wheel_fine   = TwistedUtils.TimeWheel(255, Config.TIMER_FINE_GRANULARITY)
-        self.time_wheel_coarse = TwistedUtils.TimeWheel(10, Config.TIMER_COARSE_GRANULARITY)
+        self.time_wheel_fine   = twisted.TimeWheel(255, Config.TIMER_FINE_GRANULARITY)
+        self.time_wheel_coarse = twisted.TimeWheel(10, Config.TIMER_COARSE_GRANULARITY)
         self.tick_fine()
         self.tick_coarse()
 
