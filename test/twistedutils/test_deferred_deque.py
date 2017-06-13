@@ -7,7 +7,7 @@ from twisted.trial import unittest
 from twisted.internet.defer import Deferred
 from twisted.python import log
 
-from stup.twisted.deferred_deque import *
+from stup.twistedutils.deferred_deque import *
 
 class DeferredDequeueTest(unittest.TestCase):
     def __init__(self, *args, **kwargs):

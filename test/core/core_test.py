@@ -14,7 +14,7 @@ from stup.core import *
 from stup import packet as StupPacket
 from stup import config as Config
 from stup.state import machine as StateMachine
-from stup import twisted as TwistedUtils
+from stup import twistedutils as TwistedUtils
 
 class FakeTransport(object):
     def __init__(self, output_buffer):
